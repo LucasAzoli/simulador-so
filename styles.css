@@ -54,6 +54,16 @@ menu {
     font-weight: 500;
 }
 
+td {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+th {
+    font-size: 18px;
+    font-weight: 600;
+}
+
 button {
     background-color: transparent;
     border: none;
@@ -64,6 +74,10 @@ button {
     color: var(--white);
     background-color: var(--black);
     border: none;
+    cursor: pointer;
+}
+
+.close {
     cursor: pointer;
 }
 
@@ -227,7 +241,7 @@ div.processos {
     padding: 20px 25px;
     display: flex;
     flex-direction: column;
-    max-width: 100%;
+    width: 100%;
     overflow-x: hidden;
     gap: 16px;
     box-shadow: 0px 0px 6px 0px rgba(25, 32, 42, 0.25);
@@ -240,12 +254,18 @@ div.lista {
     gap: 25px;
 }
 
+#lista-processos {
+    display: flex;
+    gap: 25px;
+}
+
 div.lista .btn-processo {
     color: var(--black);
     background-color: var(--white);
     border: 2px solid var(--black);
     padding: 48px;
     border-radius: 2px;
+    cursor: pointer;
 }
 
 div.lista .processo {
@@ -329,9 +349,87 @@ div.diagrama {
     min-width: 80px;
 }
 
+div.disco {
+    background-color: var(--white);
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 16px;
+    box-shadow: 0px 0px 6px 0px rgba(25, 32, 42, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.disco .tabela-disco {
+    overflow-x: scroll;
+}
+
+div.disco table {
+    background-color: var(--black);
+    border-radius: 5px;
+    color: var(--white);
+    padding: 20px;
+    border-spacing: 10px;
+    width: 100%;
+}
+
+div.disco table td {
+    background-color: rgba(140, 143, 148, .3);
+    border-radius: 2px;
+    padding: 11px;
+    min-width: 50px;
+}
+
+div.ram {
+    background-color: var(--white);
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 16px;
+    box-shadow: 0px 0px 6px 0px rgba(25, 32, 42, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ram .tabela-ram {
+    overflow-x: scroll;
+}
+
+div.ram table {
+    background-color: var(--black);
+    border-radius: 5px;
+    color: var(--white);
+    padding: 20px;
+    border-spacing: 10px;
+    width: 100%;
+}
+
+div.ram table td {
+    background-color: rgba(140, 143, 148, .3);
+    border-radius: 2px;
+    padding: 11px;
+    min-width: 50px;
+}
+
 @media (max-width: 1650px) {
     section.dados-simulacao {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 1100px) {
+    section.disco-ram {
+        flex-direction: column;
+    }
+
+    div.disco {
+        width: auto;
+    }
+
+    div.ram {
+        width: auto;
     }
 }
 
@@ -369,6 +467,16 @@ div.diagrama {
     label {
         font-size: 8px;
         font-weight: 500;
+    }
+
+    td {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    th {
+        font-size: 16px;
+        font-weight: 600;
     }
     
     menu {

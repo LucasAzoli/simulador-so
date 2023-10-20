@@ -72,154 +72,11 @@
             <div class="processos">
                 <h2>Lista de Processos</h2>
                 <div class="lista">
-                    <button class="btn-processo">
+                    <button class="btn-processo" id="btn-adc-processo">
                         <h1>Adicionar<br>Processo</h1>
                         <img src="./img/processo.png" alt="">
                     </button>
-                    <div class="processo">
-                        <div class="titulo">
-                            <h3>Processo PID 00</h3>
-                            <button class="close">
-                                <img src="./img/close.png" alt="">
-                            </button>
-                        </div>
-                        <div class="label">
-                            <div class="duracao">
-                                <label for="duracao">Duração:</label>
-                                <input type="number" name="duracao" id="duracao">
-                            </div>
-                            <div class="pagina">
-                                <label for="pagina">Páginas:</label>
-                                <input type="number" name="pagina" id="pagina">
-                            </div>
-                        </div>
-                        <div class="label">
-                            <div class="deadline">
-                                <label for="deadline">Deadline:</label>
-                                <input type="number" name="deadline" id="deadline">
-                            </div>
-                            <div class="chegada">
-                                <label for="chegada">Chegada:</label>
-                                <input type="number" name="chegada" id="chegada">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="processo">
-                        <div class="titulo">
-                            <h3>Processo PID 00</h3>
-                            <button class="close">
-                                <img src="./img/close.png" alt="">
-                            </button>
-                        </div>
-                        <div class="label">
-                            <div class="duracao">
-                                <label for="duracao">Duração:</label>
-                                <input type="number" name="duracao" id="duracao">
-                            </div>
-                            <div class="pagina">
-                                <label for="pagina">Páginas:</label>
-                                <input type="number" name="pagina" id="pagina">
-                            </div>
-                        </div>
-                        <div class="label">
-                            <div class="deadline">
-                                <label for="deadline">Deadline:</label>
-                                <input type="number" name="deadline" id="deadline">
-                            </div>
-                            <div class="chegada">
-                                <label for="chegada">Chegada:</label>
-                                <input type="number" name="chegada" id="chegada">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="processo">
-                        <div class="titulo">
-                            <h3>Processo PID 00</h3>
-                            <button class="close">
-                                <img src="./img/close.png" alt="">
-                            </button>
-                        </div>
-                        <div class="label">
-                            <div class="duracao">
-                                <label for="duracao">Duração:</label>
-                                <input type="number" name="duracao" id="duracao">
-                            </div>
-                            <div class="pagina">
-                                <label for="pagina">Páginas:</label>
-                                <input type="number" name="pagina" id="pagina">
-                            </div>
-                        </div>
-                        <div class="label">
-                            <div class="deadline">
-                                <label for="deadline">Deadline:</label>
-                                <input type="number" name="deadline" id="deadline">
-                            </div>
-                            <div class="chegada">
-                                <label for="chegada">Chegada:</label>
-                                <input type="number" name="chegada" id="chegada">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="processo">
-                        <div class="titulo">
-                            <h3>Processo PID 00</h3>
-                            <button class="close">
-                                <img src="./img/close.png" alt="">
-                            </button>
-                        </div>
-                        <div class="label">
-                            <div class="duracao">
-                                <label for="duracao">Duração:</label>
-                                <input type="number" name="duracao" id="duracao">
-                            </div>
-                            <div class="pagina">
-                                <label for="pagina">Páginas:</label>
-                                <input type="number" name="pagina" id="pagina">
-                            </div>
-                        </div>
-                        <div class="label">
-                            <div class="deadline">
-                                <label for="deadline">Deadline:</label>
-                                <input type="number" name="deadline" id="deadline">
-                            </div>
-                            <div class="chegada">
-                                <label for="chegada">Chegada:</label>
-                                <input type="number" name="chegada" id="chegada">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="processo">
-                        <div class="titulo">
-                            <h3>Processo PID 00</h3>
-                            <button class="close">
-                                <img src="./img/close.png" alt="">
-                            </button>
-                        </div>
-                        <div class="label">
-                            <div class="duracao">
-                                <label for="duracao">Duração:</label>
-                                <input type="number" name="duracao" id="duracao">
-                            </div>
-                            <div class="pagina">
-                                <label for="pagina">Páginas:</label>
-                                <input type="number" name="pagina" id="pagina">
-                            </div>
-                        </div>
-                        <div class="label">
-                            <div class="deadline">
-                                <label for="deadline">Deadline:</label>
-                                <input type="number" name="deadline" id="deadline">
-                            </div>
-                            <div class="chegada">
-                                <label for="chegada">Chegada:</label>
-                                <input type="number" name="chegada" id="chegada">
-                            </div>
-                        </div>
-                    </div>
+                    <div id="lista-processos"></div>
                 </div>
             </div>
         </section>
@@ -247,6 +104,21 @@
                             <td></td>
                         </tr>
                     </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="disco-ram">
+            <div class="disco">
+                <h2>Disco</h2>
+                <div class="tabela-disco">
+                    <table id="disco"></table>
+                </div>
+            </div>
+            <div class="ram">
+                <h2>Ram</h2>
+                <div class="tabela-ram">
+                    <table id="ram"></table>
                 </div>
             </div>
         </section>

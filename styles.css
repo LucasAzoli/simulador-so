@@ -286,6 +286,49 @@ div.lista .processo .label div input {
     border-radius: 5px;
 }
 
+div.diagrama {
+    background-color: var(--white);
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+    box-shadow: 0px 0px 6px 0px rgba(25, 32, 42, 0.25);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.diagrama table {
+    background-color: var(--black);
+    border-radius: 5px;
+    color: var(--white);
+    padding: 20px;
+    border-spacing: 10px;
+}
+
+.diagrama .table {
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.diagrama table td {
+    background-color: rgba(140, 143, 148, .3);
+    border-radius: 2px;
+    padding: 11px;
+    min-width: 50px;
+}
+
+.diagrama table th {
+    background-color: rgba(140, 143, 148, .3);
+    border-radius: 2px;
+    padding: 11px;
+    min-width: 50px;
+}
+
+.diagrama table .processo-tempo {
+    min-width: 80px;
+}
+
 @media (max-width: 1650px) {
     section.dados-simulacao {
         flex-direction: column;

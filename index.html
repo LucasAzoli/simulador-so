@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="btn">
-                    <button class="button">Simular</button>
+                    <button class="button" onclick="simular()">Simular</button>
                 </div>
             </div>
         </section>
@@ -85,23 +85,23 @@
             <div class="diagrama">
                 <h2>Diagrama de Gantt</h2>
                 <div class="table">
-                    <table>
+                    <table id="diagrama">
                         <tr id="tempo-tabela"></tr>
                         <tr>
                             <th class="processo-tempo">PID 01</th>
                             <td></td>
                             <td></td>
-                            <td></td>
+                            <td class="red"></td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th class="processo-tempo">PID 02</th>
+                            <td class="green"></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
+                            <td class="blue"></td>
                         </tr>
                     </table>
                 </div>

@@ -1,7 +1,3 @@
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 class Process{
     constructor(Key, ExecutionTime, Deadline, Arrival){
         this.Key = Key
@@ -16,11 +12,10 @@ class Process{
 }
 
 class Escalonator{
-    constructor(QuantumTime, OverloadTime, Delay){
+    constructor(QuantumTime, OverloadTime){
         this.QuantumTime = QuantumTime;
         this.OverloadTime = OverloadTime;
         this.ProcessArray = [];
-        this.delay = Delay * 1000
     }
 
     AddProcess(Process){
@@ -29,7 +24,7 @@ class Escalonator{
 
     Fifo(){
         var Queue = [];
-        var RunningProcess  = undefined;
+        var RunningProcess;
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
@@ -39,13 +34,10 @@ class Escalonator{
         Faz um Loop pela lista de Processos, procurando pelo primeiro processo com .Arrival == 0.
         */
         for(let i = 0; i < this.ProcessArray.length; i++){
-            if(this.ProcessArray[i].Arrival == 0 && this.ProcessArray[i].ExecutionTime){
+            if(this.ProcessArray[i].Arrival == 0){
                 RunningProcess = this.ProcessArray[i];
                 break;
             }
-        }
-        if(RunningProcess == undefined){
-            return 0;
         }
         
         /*
@@ -55,7 +47,6 @@ class Escalonator{
         para serem executados.
         */
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Ao início de cada iteração (ou seja, quando o Time aumenta), percorremos o vetor de Processos,
             checando se algum processo entrou na Queue, ou seja, se há algum processo com .Arrival ==  Time.
@@ -81,7 +72,6 @@ class Escalonator{
             if(RunningProcess == undefined && Queue.length > 0){
                 RunningProcess = Queue[0];
                 Queue.shift()
-                sleep(this.delay)
             }
             /* 
             Verifica se o RunningProcess já atingiu o tempo rodando igual ao seu tempo de execução
@@ -102,7 +92,6 @@ class Escalonator{
                 RunningProcess = Queue[0];
                 Queue.shift();
             }
-            sleep(this.delay)
             RunningProcess.RunningTime++;
             Time++;
         }
@@ -121,7 +110,7 @@ class Escalonator{
 
     SJF(){
         var WaitingProcess = [];
-        var RunningProcess = undefined;
+        var RunningProcess;
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
@@ -131,18 +120,10 @@ class Escalonator{
         Faz um Loop pela lista de Processos, procurando pelo primeiro processo com .Arrival == 0.
         */
         for(let i = 0; i < this.ProcessArray.length; i++){
-            if(this.ProcessArray[i].Arrival == 0 && this.ProcessArray[i].ExecutionTime > 0){
-                if(RunningProcess == undefined){
-                    RunningProcess = this.ProcessArray[i];
-                }else{
-                    if(RunningProcess.ExecutionTime > this.ProcessArray[i].ExecutionTime){
-                        RunningProcess = this.ProcessArray[i]
-                    }
-                }
+            if(this.ProcessArray[i].Arrival == 0){
+                RunningProcess = this.ProcessArray[i];
+                break;
             }
-        }
-        if(RunningProcess == undefined){
-            return 0;
         }
         /* 
         Loop em que é executado o SJF em si, onde o RunningProcess guarda o processo
@@ -150,7 +131,6 @@ class Escalonator{
         de processos executados ser igual ao número de processos originais.
         */
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Ao início de cada LOOP, ou seja, quando o "Time" é incrementado, verificamos
             se algum processo entrou na LISTA DE PROCESSOS ESPERANDO, para isso, basta
@@ -183,7 +163,6 @@ class Escalonator{
                         NextProcess = k;
                     }
                 }
-                sleep(this.delay)
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.slice(NextProcess,1);
             }
@@ -213,7 +192,6 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
-            sleep(this.delay)
             RunningProcess.RunningTime++;
             Time++;
         }
@@ -232,7 +210,7 @@ class Escalonator{
 
     RoundRobin(){
         var Queue = [];
-        var RunningProcess = undefined;
+        var RunningProcess;
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
@@ -246,18 +224,14 @@ class Escalonator{
         executado.
         */
         for(let i = 0; i < this.ProcessArray.length; i++){
-            if(this.ProcessArray[i].Arrival == 0 && this.ProcessArray[i].ExecutionTime){
+            if(this.ProcessArray[i].Arrival == 0){
                 RunningProcess = this.ProcessArray[i];
                 RunningProcess.Executed = true
                 break;
             }
         }
-        if(RunningProcess == undefined){
-            return 0;
-        }
 
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Percorremos a lista de Processos, verificando se há algum que entrou na FILA, perceba que aqui é usado
             o <= ao invés do ==, por conta da adição do tempo de sobrecarga, e para prevenir de pegar processos que já
@@ -284,7 +258,6 @@ class Escalonator{
                 RunningProcess = Queue[0];
                 Queue.shift();
                 RealTimeQuantum = 0;
-                sleep(this.delay)
             }
             /* 
             Processo que estava executando terminou, assim, zeramos o Quantum, e o que estava na FILA entra em seu lugar.
@@ -302,7 +275,6 @@ class Escalonator{
                 }
                 RunningProcess = Queue[0];
                 Queue.shift();
-                sleep(this.delay)
             }
             /* 
             Quantum chegou ao seu limite, o processo que estava sendo executado volta para FILA, e o que estava na
@@ -318,7 +290,6 @@ class Escalonator{
                 Time += this.OverloadTime;
                 RealTimeQuantum = 0;
             }
-            sleep(this.delay)
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
@@ -334,7 +305,7 @@ class Escalonator{
 
     EDF(){
         var WaitingProcess = [];
-        var RunningProcess = undefined;
+        var RunningProcess;
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
@@ -348,24 +319,14 @@ class Escalonator{
         executado.
         */
         for(let i = 0; i < this.ProcessArray.length; i++){
-            if(this.ProcessArray[i].Arrival == 0 && this.ProcessArray[i].ExecutionTime > 0){
-                if(RunningProcess == undefined){
-                    RunningProcess = this.ProcessArray[i];
-                }else{
-                    if(RunningProcess.Deadline > this.ProcessArray[i].Deadline){
-                        RunningProcess = this.ProcessArray[i]
-                    }
-                }
+            if(this.ProcessArray[i].Arrival == 0){
+                RunningProcess = this.ProcessArray[i];
+                RunningProcess.Executed = true
+                break;
             }
         }
 
-        if(RunningProcess == undefined){
-            return 0;
-        }
-        RunningProcess.Executed = true
-
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Percorremos a lista de Processos, verificando se há algum que entrou na FILA, perceba que aqui é usado
             o <= ao invés do ==, por conta da adição do tempo de sobrecarga, e para prevenir de pegar processos que já
@@ -397,8 +358,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                } 
-                sleep(this.delay)                    
+                }            
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -425,8 +385,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }  
-                sleep(this.delay)             
+                }               
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -446,8 +405,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }    
-                sleep(this.delay)            
+                }                
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 Time += this.OverloadTime;
@@ -468,145 +426,19 @@ class Escalonator{
     
 }
 
-let processos = [];
+var A = new Process("A", 4, 7, 0)
+var B = new Process("B", 2, 5, 2)
+var C = new Process("C", 1, 8, 4)
+var D = new Process("D", 3, 10, 6)
 
-let tempo = document.getElementById("tempo-tabela");
+var Escalonador = new Escalonator(2, 1)
+Escalonador.AddProcess(A)
+Escalonador.AddProcess(B)
+Escalonador.AddProcess(C)
+Escalonador.AddProcess(D)
 
-let tempoHTML = `<td style="background-color: transparent;"></td>`;
+var res = Escalonador.EDF()
 
-for (let i = 1; i < 101; i++) {
-    tempoHTML += `<th scope="col">${(i).toString().padStart(3, '0')}</th>`;
-}
+console.log(res)
 
-tempo.innerHTML = tempoHTML;
-
-/*let ram = document.getElementById("ram");
-
-let ramHTML = ``;
-
-for (let i = 1; i < 11; i++) {
-    ramHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-}
-
-ram.innerHTML = ramHTML;
-
-let disco = document.getElementById("disco");
-
-let discoHTML = ``;
-
-for (let i = 1; i < 11; i++) {
-    discoHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-    discoHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-}
-
-disco.innerHTML = discoHTML;*/
-
-
-
-let buttonProcesso = document.getElementById("btn-adc-processo");
-
-buttonProcesso.addEventListener("click", (e) => {
-    processos.push({time: 0, pages: 0, dead: 0, start: 0});
-    realoadProcessos();
-});
-
-function realoadProcessos() {
-    let listaProcessos = document.getElementById("lista-processos");
-
-    let processosHTML = ``;
-
-    processos.forEach((value, i) => {
-        processosHTML += `
-            <div class="processo" id="processo ${i}">
-                <div class="titulo">
-                    <h3>Processo PID ${(i+1).toString().padStart(2, '0')}</h3>
-                    <button class="close" onclick="removerProcesso(${i})">
-                        <img src="./img/close.png" alt="">
-                    </button>
-                </div>
-                <div class="label">
-                    <div class="duracao">
-                        <label for="duracao">Duração:</label>
-                        <input type="number" name="duracao" id="duracao ${(i+1).toString().padStart(2, '0')}" value=${value.time}>
-                    </div>
-                    <div class="pagina">
-                        <label for="pagina">Páginas:</label>
-                        <input type="number" name="pagina" id="pagina ${(i+1).toString().padStart(2, '0')}" value=${value.pages}>
-                    </div>
-                </div>
-                <div class="label">
-                    <div class="deadline">
-                        <label for="deadline">Deadline:</label>
-                        <input type="number" name="deadline" id="deadline ${(i+1).toString().padStart(2, '0')}" value=${value.dead}>
-                    </div>
-                    <div class="chegada">
-                        <label for="chegada">Chegada:</label>
-                        <input type="number" name="chegada" id="chegada ${(i+1).toString().padStart(2, '0')}" value=${value.start}>
-                    </div>
-                </div>
-            </div>
-        `
-    })
-
-    listaProcessos.innerHTML = processosHTML;
-}
-
-function removerProcesso(id) {
-    processos = [
-        ...processos.slice(0, id),
-        ...processos.slice(id + 1),
-    ];
-
-    realoadProcessos();
-}
-
-function simular() {
-    var Escalonador = new Escalonator(2, 1)
-
-    updateProcessValue();
-
-    processos.forEach((value, i) => {
-        var process = new Process(`PID ${(i+1).toString().padStart(2, '0')}`, value.time, value.dead, value.start)
-
-        Escalonador.AddProcess(process)
-    })
-
-    var A = new Process("A", 4, 7, 0)
-    var B = new Process("B", 2, 5, 2)
-    var C = new Process("C", 1, 8, 4)
-    var D = new Process("D", 3, 10, 6)
-
-    Escalonador.AddProcess(A)
-    Escalonador.AddProcess(B)
-    Escalonador.AddProcess(C)
-    Escalonador.AddProcess(D)
-
-    var res = Escalonador.EDF()
-
-    console.log(res)
-
-}
-
-function updateProcessValue() {
-    processos.forEach((value, i) => {
-        let time = document.getElementById(`duracao ${(i+1).toString().padStart(2, '0')}`).value;
-        let pages = document.getElementById(`pagina ${(i+1).toString().padStart(2, '0')}`).value;
-        let dead = document.getElementById(`deadline ${(i+1).toString().padStart(2, '0')}`).value;
-        let start = document.getElementById(`chegada ${(i+1).toString().padStart(2, '0')}`).value;
-        
-        processos[i] = {time, pages, dead, start}
-    })
-}
-
-let diagrama = document.getElementById("diagrama");
-
-function criarDiagrama(Time, RunningProcess, WaitingProcess) {
-
-    let tempoHTML = `<td style="background-color: transparent;"></td>`;
-
-    for (let i=1; i<Time; i++) {
-        tempoHTML += `<th scope="col">${(i).toString().padStart(3, '0')}</th>`;
-    }
-
-    tempo.innerHTML = tempoHTML;
-}
+console.log(Escalonador.ProcessArray[0])

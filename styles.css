@@ -338,6 +338,18 @@ div.diagrama {
     min-width: 50px;
 }
 
+.diagrama table td.red {
+    background-color: rgba(221, 0, 0, .8);
+}
+
+.diagrama table td.green {
+    background-color: rgba(0, 136, 0, .8);
+}
+
+.diagrama table td.blue {
+    background-color: rgba(0, 150, 255, .8);
+}
+
 .diagrama table th {
     background-color: rgba(140, 143, 148, .3);
     border-radius: 2px;

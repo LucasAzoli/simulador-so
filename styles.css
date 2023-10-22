@@ -335,7 +335,7 @@ div.diagrama {
     background-color: rgba(140, 143, 148, .3);
     border-radius: 2px;
     padding: 11px;
-    min-width: 50px;
+    width: 50px;
 }
 
 .diagrama table td.red {
@@ -354,11 +354,17 @@ div.diagrama {
     background-color: rgba(140, 143, 148, .3);
     border-radius: 2px;
     padding: 11px;
-    min-width: 50px;
+    width: 50px;
 }
 
 .diagrama table .processo-tempo {
-    min-width: 80px;
+    width: 80px;
+}
+
+section .diagrama div.table {
+    background-color: var(--black);
+    min-width: 100%;
+    min-height: 30vh;
 }
 
 div.disco {

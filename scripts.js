@@ -20,11 +20,20 @@ class Escalonator{
         this.QuantumTime = QuantumTime;
         this.OverloadTime = OverloadTime;
         this.ProcessArray = [];
-        this.delay = Delay * 1000
+        this.delay = Delay * 1000;
+        this.RunningProcessHistory = [];
     }
 
     AddProcess(Process){
         this.ProcessArray.push(Process);
+    }
+
+    AddProcessHistory(Process){
+        this.RunningProcessHistory.push(Process);
+    }
+
+    clearProcessHistory() {
+        this.RunningProcessHistory = [];
     }
 
     Fifo(){
@@ -33,6 +42,7 @@ class Escalonator{
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
+        this.clearProcessHistory();
         
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -125,6 +135,7 @@ class Escalonator{
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
+        this.clearProcessHistory();
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -237,6 +248,7 @@ class Escalonator{
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
+        this.clearProcessHistory();
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -339,6 +351,7 @@ class Escalonator{
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
+        this.clearProcessHistory();
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -358,6 +371,7 @@ class Escalonator{
                 }
             }
         }
+        this.AddProcessHistory(RunningProcess)
 
         if(RunningProcess == undefined){
             return 0;
@@ -456,6 +470,8 @@ class Escalonator{
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
+
+            this.AddProcessHistory(RunningProcess)
         }
         var AverageResponseTime = 0
 
@@ -469,39 +485,6 @@ class Escalonator{
 }
 
 let processos = [];
-
-let tempo = document.getElementById("tempo-tabela");
-
-let tempoHTML = `<td style="background-color: transparent;"></td>`;
-
-for (let i = 1; i < 101; i++) {
-    tempoHTML += `<th scope="col">${(i).toString().padStart(3, '0')}</th>`;
-}
-
-tempo.innerHTML = tempoHTML;
-
-/*let ram = document.getElementById("ram");
-
-let ramHTML = ``;
-
-for (let i = 1; i < 11; i++) {
-    ramHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-}
-
-ram.innerHTML = ramHTML;
-
-let disco = document.getElementById("disco");
-
-let discoHTML = ``;
-
-for (let i = 1; i < 11; i++) {
-    discoHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-    discoHTML += `<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>`;
-}
-
-disco.innerHTML = discoHTML;*/
-
-
 
 let buttonProcesso = document.getElementById("btn-adc-processo");
 
@@ -571,7 +554,7 @@ function simular() {
         Escalonador.AddProcess(process)
     })
 
-    var A = new Process("A", 4, 7, 0)
+    /*var A = new Process("A", 4, 7, 0)
     var B = new Process("B", 2, 5, 2)
     var C = new Process("C", 1, 8, 4)
     var D = new Process("D", 3, 10, 6)
@@ -579,12 +562,11 @@ function simular() {
     Escalonador.AddProcess(A)
     Escalonador.AddProcess(B)
     Escalonador.AddProcess(C)
-    Escalonador.AddProcess(D)
+    Escalonador.AddProcess(D)*/
 
-    var res = Escalonador.EDF()
+    Escalonador.EDF()
 
-    console.log(res)
-
+    criarDiagrama(Escalonador.RunningProcessHistory, Escalonador.ProcessArray);
 }
 
 function updateProcessValue() {
@@ -600,13 +582,49 @@ function updateProcessValue() {
 
 let diagrama = document.getElementById("diagrama");
 
-function criarDiagrama(Time, RunningProcess, WaitingProcess) {
+function criarDiagrama(RunningProcessHistory, process) {
 
-    let tempoHTML = `<td style="background-color: transparent;"></td>`;
+    diagrama.innerHTML = `<tr id="tempo-tabela"></tr>`;
 
-    for (let i=1; i<Time; i++) {
-        tempoHTML += `<th scope="col">${(i).toString().padStart(3, '0')}</th>`;
+    let diagramHeader = document.createElement('td');
+    diagramHeader.style.backgroundColor = 'transparent';
+
+    let tempo = document.getElementById("tempo-tabela");
+    tempo.appendChild(diagramHeader);
+
+    for (let i=1; i<RunningProcessHistory.length +1; i++) {
+        let diagramHeaderTime = document.createElement('th');
+        var text = document.createTextNode((i).toString().padStart(3, '0'));
+
+        diagramHeaderTime.appendChild(text);
+        setTimeout(() => {
+            tempo.appendChild(diagramHeaderTime);
+        }, 1000*i)
     }
 
-    tempo.innerHTML = tempoHTML;
+    process.forEach((obj) => {
+        let processCell = document.createElement('tr');
+        let processHTML = `<th class="processo-tempo">${obj.Key}</th>`;
+        processCell.innerHTML = processHTML;
+        diagrama.appendChild(processCell);
+    })
+
+    RunningProcessHistory.forEach((obj, index) => {
+        for (let i=0; i<process.length; i++) {
+            let processRow = diagrama.children[i+1];
+            let td = document.createElement('td');
+
+            if (process[i].Arrival <= index && process[i].Finish > index) {
+                if (obj == process[i]) {
+                    td.className = "green";
+                } else {
+                    td.className = "blue";
+                }
+            }
+
+            setTimeout(() => {
+                processRow.appendChild(td);
+            }, 1000*(index+1))
+        }
+    })
 }

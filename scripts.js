@@ -12,11 +12,10 @@ class Process{
 }
 
 class Escalonator{
-    constructor(QuantumTime, OverloadTime, Delay){
+    constructor(QuantumTime, OverloadTime){
         this.QuantumTime = QuantumTime;
         this.OverloadTime = OverloadTime;
         this.ProcessArray = [];
-        this.delay = Delay * 1000;
         this.RunningProcessHistory = [];
     }
 
@@ -32,7 +31,7 @@ class Escalonator{
         this.RunningProcessHistory = [];
     }
 
-    Fifo(){
+    FIFO(){
         var Queue = [];
         var RunningProcess  = undefined;
         var Time = 0;
@@ -53,6 +52,7 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
+        this.AddProcessHistory(RunningProcess)
         
         /*
         Loop em que é implementado o Fifo em si.
@@ -108,6 +108,7 @@ class Escalonator{
             }
             RunningProcess.RunningTime++;
             Time++;
+            this.AddProcessHistory(RunningProcess)
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
@@ -148,6 +149,7 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
+        this.AddProcessHistory(RunningProcess)
         /* 
         Loop em que é executado o SJF em si, onde o RunningProcess guarda o processo
         em execução, "Time" o tempo corrido, com o loop sendo executado até o número
@@ -217,6 +219,7 @@ class Escalonator{
             }
             RunningProcess.RunningTime++;
             Time++;
+            this.AddProcessHistory(RunningProcess)
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
@@ -231,7 +234,7 @@ class Escalonator{
         return AverageResponseTime.toFixed(2)
     }
 
-    RoundRobin(){
+    RR(){
         var Queue = [];
         var RunningProcess = undefined;
         var Time = 0;
@@ -257,6 +260,7 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
+        this.AddProcessHistory(RunningProcess)
 
         while(NumberOfExecutedProcess < NumberOfProcess){
             /* 
@@ -320,6 +324,7 @@ class Escalonator{
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
+            this.AddProcessHistory(RunningProcess)
         }
         var AverageResponseTime = 0
 
@@ -526,7 +531,10 @@ function removerProcesso(id) {
 }
 
 function simular() {
-    var Escalonador = new Escalonator(2, 1)
+    let escalonamento = document.getElementById("escalonamento").value;
+    let quantum = document.getElementById("quantum").value;
+    let sobrecarga = document.getElementById("sobrecarga").value;
+    var Escalonador = new Escalonator(quantum, sobrecarga)
 
     updateProcessValue();
 
@@ -536,17 +544,22 @@ function simular() {
         Escalonador.AddProcess(process)
     })
 
-    /*var A = new Process("A", 4, 7, 0)
-    var B = new Process("B", 2, 5, 2)
-    var C = new Process("C", 1, 8, 4)
-    var D = new Process("D", 3, 10, 6)
-
-    Escalonador.AddProcess(A)
-    Escalonador.AddProcess(B)
-    Escalonador.AddProcess(C)
-    Escalonador.AddProcess(D)*/
-
-    Escalonador.EDF()
+    switch (escalonamento) {
+        case 'FIFO':
+            Escalonador.FIFO();
+            break;
+        case 'SJF':
+            Escalonador.SJF();
+            break;
+        case 'RR':
+            Escalonador.RR();
+            break;
+        case 'EDF':
+            Escalonador.EDF();
+            break;
+    }
+      
+    
 
     criarDiagrama(Escalonador.RunningProcessHistory, Escalonador.ProcessArray);
 }
@@ -565,6 +578,7 @@ function updateProcessValue() {
 let diagrama = document.getElementById("diagrama");
 
 function criarDiagrama(RunningProcessHistory, process) {
+    let delay = parseInt(document.getElementById("delay").value);
 
     diagrama.innerHTML = `<tr id="tempo-tabela"></tr>`;
 
@@ -581,7 +595,7 @@ function criarDiagrama(RunningProcessHistory, process) {
         diagramHeaderTime.appendChild(text);
         setTimeout(() => {
             tempo.appendChild(diagramHeaderTime);
-        }, 1000*i)
+        }, delay*i)
     }
 
     process.forEach((obj) => {
@@ -606,7 +620,7 @@ function criarDiagrama(RunningProcessHistory, process) {
 
             setTimeout(() => {
                 processRow.appendChild(td);
-            }, 1000*(index+1))
+            }, delay*(index+1))
         }
     })
 }

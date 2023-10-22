@@ -16,19 +16,11 @@ class Escalonator{
         this.QuantumTime = QuantumTime;
         this.OverloadTime = OverloadTime;
         this.ProcessArray = [];
-        this.RunningProcessHistory = [];
+        this.AverageResponseTime = 0
     }
 
     AddProcess(Process){
         this.ProcessArray.push(Process);
-    }
-
-    AddProcessHistory(Process){
-        this.RunningProcessHistory.push(Process);
-    }
-
-    clearProcessHistory() {
-        this.RunningProcessHistory = [];
     }
 
     FIFO(){
@@ -37,7 +29,7 @@ class Escalonator{
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
-        this.clearProcessHistory();
+        var ProcessesByTime = []
         
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -52,7 +44,6 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
-        this.AddProcessHistory(RunningProcess)
         
         /*
         Loop em que é implementado o Fifo em si.
@@ -76,6 +67,7 @@ class Escalonator{
             */
             if(RunningProcess == undefined && Queue.length == 0){
                 Time++;
+                ProcessesByTime.push("N")
                 continue;
             }
             /* 
@@ -106,21 +98,22 @@ class Escalonator{
                 RunningProcess = Queue[0];
                 Queue.shift();
             }
+            ProcessesByTime.push(RunningProcess.Key)
             RunningProcess.RunningTime++;
             Time++;
-            this.AddProcessHistory(RunningProcess)
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
-        var AverageResponseTime = 0
+        var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
-            AverageResponseTime += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
+            ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
-        AverageResponseTime = AverageResponseTime / NumberOfProcess
-        return AverageResponseTime.toFixed(2)
+        ART = ART / NumberOfProcess
+        this.AverageResponseTime = ART.toFixed(2)
+        return ProcessesByTime
     }
 
     SJF(){
@@ -129,7 +122,7 @@ class Escalonator{
         var Time = 0;
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
-        this.clearProcessHistory();
+        var ProcessesByTime = []
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -149,7 +142,6 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
-        this.AddProcessHistory(RunningProcess)
         /* 
         Loop em que é executado o SJF em si, onde o RunningProcess guarda o processo
         em execução, "Time" o tempo corrido, com o loop sendo executado até o número
@@ -172,6 +164,7 @@ class Escalonator{
             caso, basta incrementar o "Time" até que algum outro processo entre.
             */
             if(RunningProcess == undefined && WaitingProcess.length == 0){
+                ProcessesByTime.push("N")
                 Time++;
                 continue;
             }
@@ -217,21 +210,22 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
+            ProcessesByTime.push(RunningProcess.Key)
             RunningProcess.RunningTime++;
             Time++;
-            this.AddProcessHistory(RunningProcess)
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
-        var AverageResponseTime = 0
+        var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
-            AverageResponseTime += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
+            ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
-        AverageResponseTime = AverageResponseTime / NumberOfProcess
-        return AverageResponseTime.toFixed(2)
+        ART = ART / NumberOfProcess
+        this.AverageResponseTime = ART.toFixed(2)
+        return ProcessesByTime
     }
 
     RR(){
@@ -241,7 +235,7 @@ class Escalonator{
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
-        this.clearProcessHistory();
+        var ProcessesByTime = []
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -260,7 +254,6 @@ class Escalonator{
         if(RunningProcess == undefined){
             return 0;
         }
-        this.AddProcessHistory(RunningProcess)
 
         while(NumberOfExecutedProcess < NumberOfProcess){
             /* 
@@ -278,6 +271,7 @@ class Escalonator{
             Caso em que não há nenhum processo rodando, nem nenhum na FILA, nesse caso basta aumentar o "Time"
             */
             if(RunningProcess == undefined && Queue.length == 0){
+                ProcessesByTime.push("N")
                 Time++;
                 continue;
             }
@@ -318,21 +312,24 @@ class Escalonator{
                 //console.log(`${AuxVar.Key} voltou pra fila`)
                 RunningProcess = Queue[0];
                 Queue.shift();
-                Time += this.OverloadTime;
+                for(let i = 0; i < this.OverloadTime; i++){
+                    ProcessesByTime.push("S")
+                    Time++;
+                }
                 RealTimeQuantum = 0;
             }
+            ProcessesByTime.push(RunningProcess.Key)
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
-            this.AddProcessHistory(RunningProcess)
         }
-        var AverageResponseTime = 0
-
+        var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
-            AverageResponseTime += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
+            ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
-        AverageResponseTime = AverageResponseTime / NumberOfProcess
-        return AverageResponseTime.toFixed(2)
+        ART = ART / NumberOfProcess
+        this.AverageResponseTime = ART.toFixed(2)
+        return ProcessesByTime
     }
 
     EDF(){
@@ -342,7 +339,7 @@ class Escalonator{
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
-        this.clearProcessHistory();
+        var ProcessesByTime = []
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -362,7 +359,6 @@ class Escalonator{
                 }
             }
         }
-        this.AddProcessHistory(RunningProcess)
 
         if(RunningProcess == undefined){
             return 0;
@@ -385,6 +381,7 @@ class Escalonator{
             Caso em que não há nenhum processo rodando, nem nenhum na FILA, nesse caso basta aumentar o "Time"
             */
             if(RunningProcess == undefined && WaitingProcess.length == 0){
+                ProcessesByTime.push("N")
                 Time++;
                 continue;
             }
@@ -401,7 +398,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }                 
+                }                    
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -428,7 +425,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }         
+                }              
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -448,25 +445,31 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }             
+                }              
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
-                Time += this.OverloadTime;
+
+                for(let i = 0; i < this.OverloadTime; i++){
+                    ProcessesByTime.push("S")
+                    //console.log(`Time ${Time}: S`)
+                    Time++;
+                }
                 RealTimeQuantum = 0;
             }
+            ProcessesByTime.push(RunningProcess.Key)
+            //console.log(`Time ${Time}: ${RunningProcess.Key}`)
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
-
-            this.AddProcessHistory(RunningProcess)
         }
-        var AverageResponseTime = 0
+        var ART = 0
 
         for(let i = 0; i < this.ProcessArray.length; i++){
-            AverageResponseTime += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
+            ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
-        AverageResponseTime = AverageResponseTime / NumberOfProcess
-        return AverageResponseTime.toFixed(2)
+        ART = ART / NumberOfProcess
+        this.AverageResponseTime = ART.toFixed(2)
+        return ProcessesByTime
     }
     
 }
@@ -544,24 +547,24 @@ function simular() {
         Escalonador.AddProcess(process)
     })
 
+    let RunningProcessHistory;
+
     switch (escalonamento) {
         case 'FIFO':
-            Escalonador.FIFO();
+            RunningProcessHistory = Escalonador.FIFO();
             break;
         case 'SJF':
-            Escalonador.SJF();
+            RunningProcessHistory = Escalonador.SJF();
             break;
         case 'RR':
-            Escalonador.RR();
+            RunningProcessHistory = Escalonador.RR();
             break;
         case 'EDF':
-            Escalonador.EDF();
+            RunningProcessHistory = Escalonador.EDF();
             break;
     }
-      
-    
 
-    criarDiagrama(Escalonador.RunningProcessHistory, Escalonador.ProcessArray);
+    criarDiagrama(RunningProcessHistory, Escalonador.ProcessArray);
 }
 
 function updateProcessValue() {
@@ -590,7 +593,7 @@ function criarDiagrama(RunningProcessHistory, process) {
 
     for (let i=1; i<RunningProcessHistory.length +1; i++) {
         let diagramHeaderTime = document.createElement('th');
-        var text = document.createTextNode((i).toString().padStart(3, '0'));
+        let text = document.createTextNode((i).toString().padStart(3, '0'));
 
         diagramHeaderTime.appendChild(text);
         setTimeout(() => {
@@ -611,10 +614,20 @@ function criarDiagrama(RunningProcessHistory, process) {
             let td = document.createElement('td');
 
             if (process[i].Arrival <= index && process[i].Finish > index) {
-                if (obj == process[i]) {
-                    td.className = "green";
-                } else {
-                    td.className = "blue";
+                if (obj == "S" &&  RunningProcessHistory[index-1] == process[i].Key) {
+                    td.className = "red";
+                }else {
+                    if (obj == process[i].Key) {
+                        td.className = "green";
+                    } else {
+                        td.className = "blue";
+                    }
+                }
+
+                if (((index+1) - process[i].Arrival) > process[i].Deadline) {
+                    let text = document.createTextNode('✖');
+                    td.appendChild(text);
+                    td.style.textAlign = "center"; 
                 }
             }
 

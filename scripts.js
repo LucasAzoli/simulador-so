@@ -1,7 +1,3 @@
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 class Process{
     constructor(Key, ExecutionTime, Deadline, Arrival){
         this.Key = Key
@@ -65,7 +61,6 @@ class Escalonator{
         para serem executados.
         */
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Ao início de cada iteração (ou seja, quando o Time aumenta), percorremos o vetor de Processos,
             checando se algum processo entrou na Queue, ou seja, se há algum processo com .Arrival ==  Time.
@@ -91,7 +86,6 @@ class Escalonator{
             if(RunningProcess == undefined && Queue.length > 0){
                 RunningProcess = Queue[0];
                 Queue.shift()
-                sleep(this.delay)
             }
             /* 
             Verifica se o RunningProcess já atingiu o tempo rodando igual ao seu tempo de execução
@@ -112,7 +106,6 @@ class Escalonator{
                 RunningProcess = Queue[0];
                 Queue.shift();
             }
-            sleep(this.delay)
             RunningProcess.RunningTime++;
             Time++;
         }
@@ -161,7 +154,6 @@ class Escalonator{
         de processos executados ser igual ao número de processos originais.
         */
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Ao início de cada LOOP, ou seja, quando o "Time" é incrementado, verificamos
             se algum processo entrou na LISTA DE PROCESSOS ESPERANDO, para isso, basta
@@ -194,7 +186,6 @@ class Escalonator{
                         NextProcess = k;
                     }
                 }
-                sleep(this.delay)
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.slice(NextProcess,1);
             }
@@ -224,7 +215,6 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
-            sleep(this.delay)
             RunningProcess.RunningTime++;
             Time++;
         }
@@ -269,7 +259,6 @@ class Escalonator{
         }
 
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Percorremos a lista de Processos, verificando se há algum que entrou na FILA, perceba que aqui é usado
             o <= ao invés do ==, por conta da adição do tempo de sobrecarga, e para prevenir de pegar processos que já
@@ -296,7 +285,6 @@ class Escalonator{
                 RunningProcess = Queue[0];
                 Queue.shift();
                 RealTimeQuantum = 0;
-                sleep(this.delay)
             }
             /* 
             Processo que estava executando terminou, assim, zeramos o Quantum, e o que estava na FILA entra em seu lugar.
@@ -314,7 +302,6 @@ class Escalonator{
                 }
                 RunningProcess = Queue[0];
                 Queue.shift();
-                sleep(this.delay)
             }
             /* 
             Quantum chegou ao seu limite, o processo que estava sendo executado volta para FILA, e o que estava na
@@ -330,7 +317,6 @@ class Escalonator{
                 Time += this.OverloadTime;
                 RealTimeQuantum = 0;
             }
-            sleep(this.delay)
             RealTimeQuantum++;
             RunningProcess.RunningTime++;
             Time++;
@@ -379,7 +365,6 @@ class Escalonator{
         RunningProcess.Executed = true
 
         while(NumberOfExecutedProcess < NumberOfProcess){
-            sleep(this.delay)
             /* 
             Percorremos a lista de Processos, verificando se há algum que entrou na FILA, perceba que aqui é usado
             o <= ao invés do ==, por conta da adição do tempo de sobrecarga, e para prevenir de pegar processos que já
@@ -411,8 +396,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                } 
-                sleep(this.delay)                    
+                }                 
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -439,8 +423,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }  
-                sleep(this.delay)             
+                }         
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 RealTimeQuantum = 0;
@@ -460,8 +443,7 @@ class Escalonator{
                         NewProcess = i;
                         LessTime = WaitingProcess[i].Deadline - AuxLessTime;
                     }
-                }    
-                sleep(this.delay)            
+                }             
                 RunningProcess = WaitingProcess[NewProcess];
                 WaitingProcess.splice(NewProcess,1);
                 Time += this.OverloadTime;

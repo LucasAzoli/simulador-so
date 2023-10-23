@@ -542,6 +542,10 @@ class Escalonator{
         this.AverageResponseTime = ART.toFixed(2)
         return ProcessesByTime
     }
+
+    getAverageResponseTime(){
+        return this.AverageResponseTime;
+    }
     
 }
 

@@ -31,6 +31,23 @@ class Escalonator{
         var NumberOfExecutedProcess = 0
         var ProcessesByTime = []
         
+        var boolean = false
+        var FirstProcess = this.ProcessArray[0]
+        for(let i = 0; i < this.ProcessArray.length; i++){
+            if(this.ProcessArray[i].Arrival < FirstProcess.Arrival){
+                FirstProcess = this.ProcessArray[i]
+            }
+            if(this.ProcessArray[i].Arrival == 0){
+                boolean = true
+            }
+        }
+
+        if(boolean == false){
+            let deslocamento = FirstProcess.Arrival
+            for(let i = 0; i < this.ProcessArray.length; i++){
+                this.ProcessArray[i].Arrival -= deslocamento
+            }
+        }
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
         Faz um Loop pela lista de Processos, procurando pelo primeiro processo com .Arrival == 0.
@@ -123,6 +140,24 @@ class Escalonator{
         var NumberOfProcess = this.ProcessArray.length
         var NumberOfExecutedProcess = 0
         var ProcessesByTime = []
+    
+        var boolean = false
+        var FirstProcess = this.ProcessArray[0]
+        for(let i = 0; i < this.ProcessArray.length; i++){
+            if(this.ProcessArray[i].Arrival < FirstProcess.Arrival){
+                FirstProcess = this.ProcessArray[i]
+            }
+            if(this.ProcessArray[i].Arrival == 0){
+                boolean = true
+            }
+        }
+
+        if(boolean == false){
+            let deslocamento = FirstProcess.Arrival
+            for(let i = 0; i < this.ProcessArray.length; i++){
+                this.ProcessArray[i].Arrival -= deslocamento
+            }
+        }
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -236,6 +271,24 @@ class Escalonator{
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
         var ProcessesByTime = []
+    
+        var boolean = false
+        var FirstProcess = this.ProcessArray[0]
+        for(let i = 0; i < this.ProcessArray.length; i++){
+            if(this.ProcessArray[i].Arrival < FirstProcess.Arrival){
+                FirstProcess = this.ProcessArray[i]
+            }
+            if(this.ProcessArray[i].Arrival == 0){
+                boolean = true
+            }
+        }
+
+        if(boolean == false){
+            let deslocamento = FirstProcess.Arrival
+            for(let i = 0; i < this.ProcessArray.length; i++){
+                this.ProcessArray[i].Arrival -= deslocamento
+            }
+        }
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).
@@ -340,6 +393,24 @@ class Escalonator{
         var NumberOfExecutedProcess = 0
         var RealTimeQuantum = 0;
         var ProcessesByTime = []
+    
+        var boolean = false
+        var FirstProcess = this.ProcessArray[0]
+        for(let i = 0; i < this.ProcessArray.length; i++){
+            if(this.ProcessArray[i].Arrival < FirstProcess.Arrival){
+                FirstProcess = this.ProcessArray[i]
+            }
+            if(this.ProcessArray[i].Arrival == 0){
+                boolean = true
+            }
+        }
+
+        if(boolean == false){
+            let deslocamento = FirstProcess.Arrival
+            for(let i = 0; i < this.ProcessArray.length; i++){
+                this.ProcessArray[i].Arrival -= deslocamento
+            }
+        }
 
         /*
         Procura pelo primeiro processo a entrar na Queue (Processo que tem .Arrival == 0).

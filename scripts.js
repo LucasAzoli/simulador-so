@@ -731,5 +731,40 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
         turnAround.innerHTML = "TurnAround: " + turnAroundValue;
     }, delay*(RunningProcessHistory.length))
 
-    
 }
+
+let disco = document.getElementById("disco");
+let discoArray = Array(120).fill('-');
+let discoHTML = '';
+
+discoArray.forEach((obj, id) => {
+    if (id%12 == 0) {
+        discoHTML += `<tr>`;
+    }
+
+    discoHTML += `<td>${obj}</td>`;
+
+    if (id%12 == 11) {
+        discoHTML += `</tr>`;
+    }
+})
+
+disco.innerHTML = discoHTML;
+
+let ram = document.getElementById("ram");
+let ramArray = Array(50).fill('-');
+let ramHTML = '';
+
+ramArray.forEach((obj, id) => {
+    if (id%5 == 0) {
+        ramHTML += `<tr>`;
+    }
+
+    ramHTML += `<td>${obj}</td>`;
+    
+    if (id%5 == 4) {
+        ramHTML += `</tr>`;
+    }
+})
+
+ram.innerHTML = ramHTML;

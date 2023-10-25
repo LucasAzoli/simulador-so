@@ -630,6 +630,8 @@ function simular() {
     let quantum = document.getElementById("quantum").value;
     let sobrecarga = document.getElementById("sobrecarga").value;
     var Escalonador = new Escalonator(quantum, sobrecarga)
+    let turnAround = document.getElementById("turnaround");
+    turnAround.innerHTML = '';
 
     processos.forEach((value, i) => {
         var process = new Process(`PID ${(i+1).toString().padStart(2, '0')}`, value.time, value.dead, value.start)
@@ -654,7 +656,7 @@ function simular() {
             break;
     }
 
-    criarDiagrama(RunningProcessHistory, Escalonador.ProcessArray);
+    criarDiagrama(RunningProcessHistory, Escalonador.ProcessArray, Escalonador.getAverageResponseTime());
 }
 
 function updateProcessValue(id) {
@@ -667,7 +669,7 @@ function updateProcessValue(id) {
 
 let diagrama = document.getElementById("diagrama");
 
-function criarDiagrama(RunningProcessHistory, process) {
+function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
     let delay = parseInt(document.getElementById("delay").value);
 
     diagrama.innerHTML = `<tr id="tempo-tabela"></tr>`;
@@ -723,4 +725,11 @@ function criarDiagrama(RunningProcessHistory, process) {
             }, delay*(index+1))
         }
     })
+
+    setTimeout(() => {
+        let turnAround = document.getElementById("turnaround");
+        turnAround.innerHTML = "TurnAround: " + turnAroundValue;
+    }, delay*(RunningProcessHistory.length))
+
+    
 }

@@ -319,16 +319,27 @@ div.diagrama {
 }
 
 .diagrama table {
-    background-color: var(--black);
-    border-radius: 5px;
     color: var(--white);
     padding: 20px;
     border-spacing: 10px;
 }
 
 .diagrama .table {
+    background-color: var(--black);
+    border-radius: 5px;
+}
+
+.diagrama .table {
     width: 100%;
     overflow-x: scroll;
+}
+
+.diagrama .table h3 {
+    width: calc(100%-30px);
+    text-align: right;
+    padding-bottom: 20px;
+    padding-right: 30px;
+    color: var(--white);
 }
 
 .diagrama table td {
@@ -359,6 +370,10 @@ div.diagrama {
 
 .diagrama table .processo-tempo {
     width: 80px;
+}
+
+#tempo-tabela td {
+    height: 27px;
 }
 
 section .diagrama div.table {
@@ -429,6 +444,10 @@ div.ram table td {
     border-radius: 2px;
     padding: 11px;
     min-width: 50px;
+}
+
+#turnaround {
+    height: 27px;
 }
 
 @media (max-width: 1650px) {

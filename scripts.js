@@ -575,21 +575,21 @@ function realoadProcessos() {
                 <div class="label">
                     <div class="duracao">
                         <label for="duracao">Duração:</label>
-                        <input type="number" name="duracao" id="duracao ${(i+1).toString().padStart(2, '0')}" value=${value.time}>
+                        <input type="number" name="duracao" id="duracao ${(i+1).toString().padStart(2, '0')}" value=${value.time} onchange="updateProcessValue(${i})" oninput="this.value|=0">
                     </div>
                     <div class="pagina">
                         <label for="pagina">Páginas:</label>
-                        <input type="number" name="pagina" id="pagina ${(i+1).toString().padStart(2, '0')}" value=${value.pages}>
+                        <input type="number" name="pagina" id="pagina ${(i+1).toString().padStart(2, '0')}" value=${value.pages} onchange="updateProcessValue(${i})" oninput="this.value|=0">
                     </div>
                 </div>
                 <div class="label">
                     <div class="deadline">
                         <label for="deadline">Deadline:</label>
-                        <input type="number" name="deadline" id="deadline ${(i+1).toString().padStart(2, '0')}" value=${value.dead}>
+                        <input type="number" name="deadline" id="deadline ${(i+1).toString().padStart(2, '0')}" value=${value.dead} onchange="updateProcessValue(${i})" oninput="this.value|=0">
                     </div>
                     <div class="chegada">
                         <label for="chegada">Chegada:</label>
-                        <input type="number" name="chegada" id="chegada ${(i+1).toString().padStart(2, '0')}" value=${value.start}>
+                        <input type="number" name="chegada" id="chegada ${(i+1).toString().padStart(2, '0')}" value=${value.start} onchange="updateProcessValue(${i})" oninput="this.value|=0">
                     </div>
                 </div>
             </div>
@@ -597,6 +597,23 @@ function realoadProcessos() {
     })
 
     listaProcessos.innerHTML = processosHTML;
+
+    let diagrama = document.getElementById("diagrama");
+
+    diagrama.innerHTML = `<tr id="tempo-tabela"></tr>`;
+
+    let diagramHeader = document.createElement('td');
+    diagramHeader.style.backgroundColor = 'transparent';
+
+    let tempo = document.getElementById("tempo-tabela");
+    tempo.appendChild(diagramHeader);
+
+    processos.forEach((obj, id) => {
+        let processCell = document.createElement('tr');
+        let processHTML = `<th class="processo-tempo">PID ${(id+1).toString().padStart(2, '0')}</th>`;
+        processCell.innerHTML = processHTML;
+        diagrama.appendChild(processCell);
+    })
 }
 
 function removerProcesso(id) {
@@ -613,8 +630,6 @@ function simular() {
     let quantum = document.getElementById("quantum").value;
     let sobrecarga = document.getElementById("sobrecarga").value;
     var Escalonador = new Escalonator(quantum, sobrecarga)
-
-    updateProcessValue();
 
     processos.forEach((value, i) => {
         var process = new Process(`PID ${(i+1).toString().padStart(2, '0')}`, value.time, value.dead, value.start)
@@ -642,15 +657,12 @@ function simular() {
     criarDiagrama(RunningProcessHistory, Escalonador.ProcessArray);
 }
 
-function updateProcessValue() {
-    processos.forEach((value, i) => {
-        let time = document.getElementById(`duracao ${(i+1).toString().padStart(2, '0')}`).value;
-        let pages = document.getElementById(`pagina ${(i+1).toString().padStart(2, '0')}`).value;
-        let dead = document.getElementById(`deadline ${(i+1).toString().padStart(2, '0')}`).value;
-        let start = document.getElementById(`chegada ${(i+1).toString().padStart(2, '0')}`).value;
-        
-        processos[i] = {time, pages, dead, start}
-    })
+function updateProcessValue(id) {
+    let time = document.getElementById(`duracao ${(id+1).toString().padStart(2, '0')}`).value;
+    let pages = document.getElementById(`pagina ${(id+1).toString().padStart(2, '0')}`).value;
+    let dead = document.getElementById(`deadline ${(id+1).toString().padStart(2, '0')}`).value;
+    let start = document.getElementById(`chegada ${(id+1).toString().padStart(2, '0')}`).value;
+    processos[id] = {time, pages, dead, start}
 }
 
 let diagrama = document.getElementById("diagrama");

@@ -7,6 +7,7 @@ class Process{
         this.Finish = 0;
         this.RunningTime = 0;
         this.Executed = false
+        this.size = 0
     }
     
 }

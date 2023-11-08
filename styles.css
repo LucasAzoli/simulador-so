@@ -412,6 +412,7 @@ div.disco table td {
     border-radius: 2px;
     padding: 11px;
     min-width: 20px;
+    text-align: center;
 }
 
 div.ram {
@@ -444,6 +445,18 @@ div.ram table td {
     border-radius: 2px;
     padding: 11px;
     min-width: 20px;
+    text-align: center;
+    position: relative;
+}
+
+div.ram table td p {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding-top: 3px;
+    padding-left: 5px;
+    text-align: left;
+    color: #DEF1F9;
 }
 
 #turnaround {

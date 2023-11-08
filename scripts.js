@@ -1,12 +1,17 @@
 class Process{
-    constructor(Key, ExecutionTime, Deadline, Arrival){
+    constructor(Key, ExecutionTime, Deadline, Arrival, pages){
         this.Key = Key
         this.ExecutionTime =  ExecutionTime;
         this.Deadline = Deadline;
         this.Arrival = Arrival;
         this.Finish = 0;
         this.RunningTime = 0;
-        this.Executed = false
+        this.Executed = false;
+        this.Size = pages;
+    }
+
+    size() {
+        return this.Size;
     }
     
 }
@@ -549,7 +554,130 @@ class Escalonator{
     
 }
 
+class Queue {
+    constructor() {
+      this.items = [];
+    }
+
+    enqueue(item) {
+      this.items.push(item);
+    }
+
+    first() {
+      if (this.isEmpty()) {
+        return "Queue is empty";
+      }
+      return this.items.shift();
+    }
+
+    front() {
+      if (this.isEmpty()) {
+        return "Queue is empty";
+      }
+      return this.items[0];
+    }
+
+    isEmpty() {
+      return this.items.length === 0;
+    }
+
+    size() {
+      return this.items.length;
+    }
+
+    // used in LRU algorithm
+    remove(item) {
+        let index = this.items.indexOf(item);
+        if(index > -1) {
+            this.items.splice(index, 1);
+        }
+    }
+}
+
+
+
+// create a class called Memory
+
+
+class Memory {
+    constructor(algorithm) {
+        this.memsize = 50;
+        this.memory = new Array(50).fill("-");
+        this.algorithm = algorithm; // consider this to be a string ("FIFO" or "LRU")
+        this.free = this.memsize; // free space in memory
+        this.active = new Queue(); // active processes in memory
+        this.LRU = new Queue(); // least recently used processes in memory
+    }
+
+
+
+
+    // operations with memory
+    allocate(process) {
+      // check if the process is already in memory
+      for(let i = 0; i < this.memsize; i++) {
+        if(this.memory[i] == process.Key) {
+            if(this.algorithm == "LRU") { // updating the LRU queue
+                this.LRU.remove(process);
+                this.LRU.enqueue(process);
+            }
+            return;
+        }
+      }
+
+        // check if there is enough space in the memory to allocate the process
+
+        while(process.size() > this.free) {
+          // if there is not enough space, apply the algorithm to free up space and allocate the memory
+            if(this.algorithm == "FIFO") {
+                let change = this.active.first(); // get the first process in the queue( First in)
+                for(let i = 0; i < this.memsize; i++) {
+                    if(this.memory[i] == change) { // find the space in memory that the process is occupying
+                        this.memory[i] = "-"; // free up the space
+                    }
+                }
+                this.free += process.size(); // update the free space
+
+            }else{
+                let change = this.LRU.first(); // get the least recently used process
+                for(let i = 0; i < this.memsize; i++) {
+                    if(this.memory[i] == change) { // find the space in memory that the process is occupying
+                        this.memory[i] = "-"; // free up the space
+                    }
+                }
+                this.free += process.size(); // update the free space
+            }
+        }
+
+
+        // if there is enough space, allocate the memory and return the updated memory state
+        let aux = 0;
+
+        for(let i = 0; i < this.memsize; i++) {
+            if(process.size() == aux){
+                this.free -= process.size();
+                break;
+            }
+            if(this.memory[i] == "-") {
+                this.memory[i] = process.Key;
+                aux++;
+            }
+        }
+        this.LRU.enqueue(process); // add the process to the queue (LAST USED)
+        this.active.enqueue(process); // add the process to the queue
+        return;
+
+    }
+
+    getMemoryState() {
+        return this.memory;
+    }
+
+}
+
 let processos = [];
+
+let memory;
 
 let buttonProcesso = document.getElementById("btn-adc-processo");
 
@@ -627,6 +755,7 @@ function removerProcesso(id) {
 
 function simular() {
     let escalonamento = document.getElementById("escalonamento").value;
+    let paginacao = document.getElementById("paginacao").value;
     let quantum = document.getElementById("quantum").value;
     let sobrecarga = document.getElementById("sobrecarga").value;
     var Escalonador = new Escalonator(quantum, sobrecarga)
@@ -634,7 +763,7 @@ function simular() {
     turnAround.innerHTML = '';
 
     processos.forEach((value, i) => {
-        var process = new Process(`PID ${(i+1).toString().padStart(2, '0')}`, value.time, value.dead, value.start)
+        var process = new Process(`PID ${(i+1).toString().padStart(2, '0')}`, value.time, value.dead, value.start, parseInt(value.pages))
 
         Escalonador.AddProcess(process)
     })
@@ -653,6 +782,15 @@ function simular() {
             break;
         case 'EDF':
             RunningProcessHistory = Escalonador.EDF();
+            break;
+    }
+
+    switch (paginacao) {
+        case 'FIFO':
+            memory = new Memory("FIFO");
+            break;
+        case 'LRU':
+            memory = new Memory("LRU");
             break;
     }
 
@@ -699,6 +837,7 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
 
     RunningProcessHistory.forEach((obj, index) => {
         for (let i=0; i<process.length; i++) {
+            let atualProcess;
             let processRow = diagrama.children[i+1];
             let td = document.createElement('td');
 
@@ -708,6 +847,7 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
                 }else {
                     if (obj == process[i].Key) {
                         td.className = "green";
+                        atualProcess = process[i];
                     } else {
                         td.className = "blue";
                     }
@@ -722,6 +862,10 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
 
             setTimeout(() => {
                 processRow.appendChild(td);
+                if(atualProcess) {
+                    memory.allocate(atualProcess);
+                    updateMemory();
+                }
             }, delay*(index+1))
         }
     })
@@ -768,3 +912,28 @@ ramArray.forEach((obj, id) => {
 })
 
 ram.innerHTML = ramHTML;
+
+function updateMemory() {
+    let ram = document.getElementById("ram");
+    let ramArray = memory.memory;
+    let ramHTML = '';
+
+    ramArray.forEach((obj, id) => {
+        if (id%5 == 0) {
+            ramHTML += `<tr>`;
+        }
+
+        if (obj != "-") {
+            ramHTML += `<td><p>${id}</p>${obj.slice(0,3) + `<br>` + obj.slice(4, obj.length)}</td>`;
+        } else {
+            ramHTML += `<td><p>${id}</p>${obj}</td>`;
+        }
+        
+        if (id%5 == 4) {
+            ramHTML += `</tr>`;
+        }
+
+    })
+
+    ram.innerHTML = ramHTML;
+}

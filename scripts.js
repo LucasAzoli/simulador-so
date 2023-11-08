@@ -612,7 +612,7 @@ class Memory {
 
 
 
-    // operations with memory
+    // operations with memory (now we're using the PID as the process identifier)
     allocate(process) {
       // check if the process is already in memory
       for(let i = 0; i < this.memsize; i++) {
@@ -632,20 +632,20 @@ class Memory {
             if(this.algorithm == "FIFO") {
                 let change = this.active.first(); // get the first process in the queue( First in)
                 for(let i = 0; i < this.memsize; i++) {
-                    if(this.memory[i] == change) { // find the space in memory that the process is occupying
+                    if(this.memory[i] == change.Key) { // find the space in memory that the process is occupying
                         this.memory[i] = "-"; // free up the space
                     }
                 }
-                this.free += process.size(); // update the free space
+                this.free += change.size(); // update the free space
 
             }else{
                 let change = this.LRU.first(); // get the least recently used process
                 for(let i = 0; i < this.memsize; i++) {
-                    if(this.memory[i] == change) { // find the space in memory that the process is occupying
+                    if(this.memory[i] == change.Key) { // find the space in memory that the process is occupying
                         this.memory[i] = "-"; // free up the space
                     }
                 }
-                this.free += process.size(); // update the free space
+                this.free += change.size(); // update the free space
             }
         }
 

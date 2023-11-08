@@ -39,8 +39,8 @@
                     <label for="paginacao">Escolha um método:</label>
                     <div class="select">
                         <select name="paginacao" id="paginacao">
-                            <option value="FIFO">First Come First Served</option>
-                            <option value="LRU">LRU</option>
+                            <option value="FIFO">First In First Out (FIFO)</option>
+                            <option value="LRU">Least Recently Used (LRU)</option>
                         </select>
                     </div>
                 </div>
@@ -51,15 +51,15 @@
                 <div class="label">
                     <div class="quantum">
                         <label for="quantum">Escolha o Quantum:</label>
-                        <input type="number" name="quantum" id="quantum">
+                        <input type="number" name="quantum" id="quantum" oninput="this.value|=0" value=2>
                     </div>
                     <div class="sobrecarga">
                         <label for="sobrecarga">Escolha a Sobrecarga:</label>
-                        <input type="number" name="sobrecarga" id="sobrecarga">
+                        <input type="number" name="sobrecarga" id="sobrecarga" oninput="this.value|=0" value=1>
                     </div>
                     <div class="delay">
                         <label for="delay">Escolha o Delay:</label>
-                        <input type="number" name="delay" id="delay">
+                        <input type="number" name="delay" id="delay" oninput="this.value|=0" value=1000>
                     </div>
                 </div>
                 <div class="btn">
@@ -88,6 +88,7 @@
                     <table id="diagrama">
                         <tr id="tempo-tabela"></tr>
                     </table>
+                    <h3 id="turnaround"></h3>
                 </div>
             </div>
         </section>
@@ -96,7 +97,8 @@
             <div class="disco">
                 <h2>Disco</h2>
                 <div class="tabela-disco">
-                    <table id="disco"></table>
+                    <table id="disco">
+                    </table>
                 </div>
             </div>
             <div class="ram">

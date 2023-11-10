@@ -808,6 +808,7 @@ function updateProcessValue(id) {
 let diagrama = document.getElementById("diagrama");
 
 function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
+    let escalonamento = document.getElementById("escalonamento").value;
     let delay = parseInt(document.getElementById("delay").value);
 
     diagrama.innerHTML = `<tr id="tempo-tabela"></tr>`;
@@ -853,7 +854,7 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
                     }
                 }
 
-                if (((index+1) - process[i].Arrival) > process[i].Deadline) {
+                if (((index+1) - process[i].Arrival) > process[i].Deadline && escalonamento == "EDF") {
                     let text = document.createTextNode('✖');
                     td.appendChild(text);
                     td.style.textAlign = "center"; 

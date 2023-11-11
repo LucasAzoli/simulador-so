@@ -607,6 +607,7 @@ class Memory {
         this.free = this.memsize; // free space in memory
         this.active = new Queue(); // active processes in memory
         this.LRU = new Queue(); // least recently used processes in memory
+        this.virtual = new Queue(100).fill("-"); // virtual memory
     }
 
 
@@ -614,16 +615,23 @@ class Memory {
 
     // operations with memory (now we're using the PID as the process identifier)
     allocate(process) {
-      // check if the process is already in memory
-      for(let i = 0; i < this.memsize; i++) {
-        if(this.memory[i] == process.Key) {
-            if(this.algorithm == "LRU") { // updating the LRU queue
-                this.LRU.remove(process);
-                this.LRU.enqueue(process);
+        
+        // checking if the process is already in virtual memory
+        if(this.virtual[process.Key] != "-") {
+            // if it is, check if it is in RAM
+            if(this.memory[this.virtual[process.Key]] == process.Key) {
+
+                // then we do nothing, just update the LRU queue (if we're using LRU)
+                if(this.algorithm == "LRU") { // updating the LRU queue
+                    this.LRU.remove(process);
+                    this.LRU.enqueue(process);
+                }
+                return;
             }
-            return;
         }
-      }
+
+
+        // else we free up space in RAM and allocate the process
 
         // check if there is enough space in the memory to allocate the process
 
@@ -663,6 +671,11 @@ class Memory {
                 aux++;
             }
         }
+
+        // update the virtual memory
+
+        this.virtual[process.Key] = this.memory.indexOf(process.Key);
+
         this.LRU.enqueue(process); // add the process to the queue (LAST USED)
         this.active.enqueue(process); // add the process to the queue
         return;
@@ -671,6 +684,10 @@ class Memory {
 
     getMemoryState() {
         return this.memory;
+    }
+
+    getVirtualMemoryState() {
+        return this.virtual;
     }
 
 }

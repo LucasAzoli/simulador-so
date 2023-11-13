@@ -607,7 +607,7 @@ class Memory {
         this.free = this.memsize; // free space in memory
         this.active = new Queue(); // active processes in memory
         this.LRU = new Queue(); // least recently used processes in memory
-        this.virtual = new Queue(100).fill("-"); // virtual memory
+        this.virtual = new Array(100).fill("-"); // virtual memory
     }
 
 
@@ -672,7 +672,7 @@ class Memory {
             }
         }
 
-        // update the virtual memory
+        // update the virtual memory with the first occurence of the allocated process
 
         this.virtual[process.Key] = this.memory.indexOf(process.Key);
 

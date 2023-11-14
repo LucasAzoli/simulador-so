@@ -617,7 +617,7 @@ class Memory {
     allocate(process) {
         
         // checking if the process is already in virtual memory (virtual[PID] != "-", significa que temalguma informação ali, ou seja, uma posição da RAM)
-        let PID = process.Key.split(" ")[1];
+       let PID = parseInt(process.Key.split(" ")[1], 10);
 
         if(this.virtual[PID] != "-") {
             // if it is, check if it is in RAM (então, a gente verifica na RAM se aquela posição apontada está armazenando o processo, ou se a página foi substituída)

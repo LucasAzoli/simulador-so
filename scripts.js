@@ -616,10 +616,12 @@ class Memory {
     // operations with memory (now we're using the PID as the process identifier)
     allocate(process) {
         
-        // checking if the process is already in virtual memory
-        if(this.virtual[process.Key] != "-") {
-            // if it is, check if it is in RAM
-            if(this.memory[this.virtual[process.Key]] == process.Key) {
+        // checking if the process is already in virtual memory (virtual[PID] != "-", significa que temalguma informação ali, ou seja, uma posição da RAM)
+        let PID = process.Key.split(" ")[1];
+
+        if(this.virtual[PID] != "-") {
+            // if it is, check if it is in RAM (então, a gente verifica na RAM se aquela posição apontada está armazenando o processo, ou se a página foi substituída)
+            if(this.memory[this.virtual[PID]] == process.Key) {
 
                 // then we do nothing, just update the LRU queue (if we're using LRU)
                 if(this.algorithm == "LRU") { // updating the LRU queue
@@ -674,7 +676,7 @@ class Memory {
 
         // update the virtual memory with the first occurence of the allocated process
 
-        this.virtual[process.Key] = this.memory.indexOf(process.Key);
+        this.virtual[PID] = this.memory.indexOf(process.Key);
 
         this.LRU.enqueue(process); // add the process to the queue (LAST USED)
         this.active.enqueue(process); // add the process to the queue

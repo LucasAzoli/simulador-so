@@ -898,17 +898,17 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
 }
 
 let disco = document.getElementById("disco");
-let discoArray = Array(120).fill('-');
+let discoArray = Array(100).fill('-');
 let discoHTML = '';
 
 discoArray.forEach((obj, id) => {
-    if (id%12 == 0) {
+    if (id%10 == 0) {
         discoHTML += `<tr>`;
     }
 
     discoHTML += `<td>${obj}</td>`;
 
-    if (id%12 == 11) {
+    if (id%10 == 9) {
         discoHTML += `</tr>`;
     }
 })
@@ -938,6 +938,11 @@ function updateMemory() {
     let ramArray = memory.memory;
     let ramHTML = '';
 
+    let disco = document.getElementById("disco");
+    let discoArray = memory.virtual;
+    console.log(discoArray)
+    let discoHTML = '';
+
     ramArray.forEach((obj, id) => {
         if (id%5 == 0) {
             ramHTML += `<tr>`;
@@ -956,4 +961,18 @@ function updateMemory() {
     })
 
     ram.innerHTML = ramHTML;
+
+    discoArray.forEach((obj, id) => {
+        if (id%10 == 0) {
+            discoHTML += `<tr>`;
+        }
+    
+        discoHTML += `<td>${obj}</td>`;
+    
+        if (id%10 == 9) {
+            discoHTML += `</tr>`;
+        }
+    })
+
+    disco.innerHTML = discoHTML;
 }

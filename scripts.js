@@ -619,9 +619,9 @@ class Memory {
         // checking if the process is already in virtual memory (virtual[PID] != "-", significa que temalguma informação ali, ou seja, uma posição da RAM)
        let PID = parseInt(process.Key.split(" ")[1], 10);
 
-        if(this.virtual[PID] != "-") {
+        if(this.virtual[PID - 1] != "-") { // 1 is the starting index
             // if it is, check if it is in RAM (então, a gente verifica na RAM se aquela posição apontada está armazenando o processo, ou se a página foi substituída)
-            if(this.memory[this.virtual[PID]] == process.Key) {
+            if(this.memory[this.virtual[PID - 1]] == process.Key) {
 
                 // then we do nothing, just update the LRU queue (if we're using LRU)
                 if(this.algorithm == "LRU") { // updating the LRU queue
@@ -676,7 +676,7 @@ class Memory {
 
         // update the virtual memory with the first occurence of the allocated process
 
-        this.virtual[PID] = this.memory.indexOf(process.Key);
+        this.virtual[PID - 1] = this.memory.indexOf(process.Key);
 
         this.LRU.enqueue(process); // add the process to the queue (LAST USED)
         this.active.enqueue(process); // add the process to the queue
@@ -898,17 +898,17 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
 }
 
 let disco = document.getElementById("disco");
-let discoArray = Array(120).fill('-');
+let discoArray = Array(100).fill('-');
 let discoHTML = '';
 
 discoArray.forEach((obj, id) => {
-    if (id%12 == 0) {
+    if (id%10 == 0) {
         discoHTML += `<tr>`;
     }
 
     discoHTML += `<td>${obj}</td>`;
 
-    if (id%12 == 11) {
+    if (id%10 == 9) {
         discoHTML += `</tr>`;
     }
 })
@@ -938,6 +938,11 @@ function updateMemory() {
     let ramArray = memory.memory;
     let ramHTML = '';
 
+    let disco = document.getElementById("disco");
+    let discoArray = memory.virtual;
+    console.log(discoArray)
+    let discoHTML = '';
+
     ramArray.forEach((obj, id) => {
         if (id%5 == 0) {
             ramHTML += `<tr>`;
@@ -956,4 +961,18 @@ function updateMemory() {
     })
 
     ram.innerHTML = ramHTML;
+
+    discoArray.forEach((obj, id) => {
+        if (id%10 == 0) {
+            discoHTML += `<tr>`;
+        }
+    
+        discoHTML += `<td>${obj}</td>`;
+    
+        if (id%10 == 9) {
+            discoHTML += `</tr>`;
+        }
+    })
+
+    disco.innerHTML = discoHTML;
 }

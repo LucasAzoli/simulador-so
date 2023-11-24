@@ -694,6 +694,29 @@ class Memory {
 
 }
 
+let coresHexadecimais = [
+    "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF",
+    "#B8860B", "#FF4500", "#00FF7F", "#808000", "#800080", "#008080",
+    "#C0C0C0", "#808080", "#FFA500", "#A52A2A", "#800000", "#008000",
+    "#000080", "#ADD8E6", "#FF69B4", "#DAA520", "#008080", "#800080",
+    "#DC143C", "#00FFFF", "#00008B", "#B8860B", "#A9A9A9", "#006400",
+    "#BDB76B", "#8B008B", "#556B2F", "#FF8C00", "#9932CC", "#8B0000",
+    "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F", "#00CED1", "#9400D3",
+    "#FF4500", "#DA70D6", "#8A2BE2", "#000080", "#D2691E", "#5F9EA0",
+    "#FFD700", "#FF6347", "#4B0082", "#7FFF00", "#6495ED", "#FFF8DC",
+    "#DCDCDC", "#FFD700", "#00008B", "#008B8B", "#B8860B", "#A9A9A9",
+    "#006400", "#BDB76B", "#8B008B", "#556B2F", "#FF8C00", "#9932CC",
+    "#8B0000", "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F", "#00CED1",
+    "#9400D3", "#FF4500", "#DA70D6", "#8A2BE2", "#00FF7F", "#D2691E",
+    "#5F9EA0", "#FFD700", "#FF6347", "#4B0082", "#7FFF00", "#6495ED",
+    "#FFF8DC", "#DCDCDC", "#FFD700", "#00008B", "#008B8B", "#B8860B",
+    "#A9A9A9", "#006400", "#BDB76B", "#8B008B", "#556B2F", "#FF8C00",
+    "#9932CC", "#8B0000", "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F",
+    "#00CED1", "#9400D3", "#008000", "#DA70D6", "#8A2BE2", "#00FF7F",
+    "#D2691E", "#5F9EA0", "#FFD700", "#FF6347", "#4B0082", "#7FFF00",
+    "#6495ED", "#FFF8DC", "#DCDCDC", "#FFD700", "#00008B", "#008B8B",
+    "#800000", "#A9A9A9", "#006400", "#BDB76B", "#8B008B", "#556B2F"];
+
 let processos = [];
 
 let memory;
@@ -949,7 +972,7 @@ function updateMemory() {
         }
 
         if (obj != "-") {
-            ramHTML += `<td><p>${id}</p>${obj.slice(0,3) + `<br>` + obj.slice(4, obj.length)}</td>`;
+            ramHTML += `<td style="color: ${coresHexadecimais[parseInt(obj.slice(4, obj.length)) - 1]};"><p style="color: #DEF1F9;">${id}</p>${obj.slice(0,3) + `<br>` + obj.slice(4, obj.length)}</td>`;
         } else {
             ramHTML += `<td><p>${id}</p>${obj}</td>`;
         }
@@ -966,8 +989,14 @@ function updateMemory() {
         if (id%10 == 0) {
             discoHTML += `<tr>`;
         }
-    
-        discoHTML += `<td>${obj}</td>`;
+
+        if (obj != "-") {
+            discoHTML += `<td style="color: ${coresHexadecimais[id]};">${obj}</td>`;
+        } else {
+            discoHTML += `<td>${obj}</td>`;
+        }
+        
+        
     
         if (id%10 == 9) {
             discoHTML += `</tr>`;

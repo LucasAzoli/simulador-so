@@ -906,14 +906,14 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
     let tempo = document.getElementById("tempo-tabela");
     tempo.appendChild(diagramHeader);
 
-    for (let i=1; i<RunningProcessHistory.length +1; i++) {
+    for (let i=0; i<RunningProcessHistory.length; i++) {
         let diagramHeaderTime = document.createElement('th');
         let text = document.createTextNode((i).toString().padStart(3, '0'));
 
         diagramHeaderTime.appendChild(text);
         setTimeout(() => {
             tempo.appendChild(diagramHeaderTime);
-        }, delay*i)
+        }, delay*(i+1))
     }
 
     process.forEach((obj) => {

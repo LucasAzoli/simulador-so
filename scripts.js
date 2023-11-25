@@ -79,8 +79,13 @@ class Escalonator{
             checando se algum processo entrou na Queue, ou seja, se há algum processo com .Arrival ==  Time.
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
-                    Queue.push(this.ProcessArray[i]);
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival == Time){
+                        Queue.push(this.ProcessArray[i]);
+                    }
+                }else{                
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
+                    Queue.push(this.ProcessArray[i]);}
                 }
             }
             /* 
@@ -114,6 +119,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(Queue.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -129,12 +135,14 @@ class Escalonator{
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
+        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -187,15 +195,22 @@ class Escalonator{
         em execução, "Time" o tempo corrido, com o loop sendo executado até o número
         de processos executados ser igual ao número de processos originais.
         */
-        while(NumberOfExecutedProcess < NumberOfProcess){
+       var controle = 0
+        while(NumberOfExecutedProcess < NumberOfProcess && controle < 100){
             /* 
             Ao início de cada LOOP, ou seja, quando o "Time" é incrementado, verificamos
             se algum processo entrou na LISTA DE PROCESSOS ESPERANDO, para isso, basta
             verificar se há algum processo com .Arrival
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
-                    WaitingProcess.push(this.ProcessArray[i]);
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                    }
                 }
             }
 
@@ -205,6 +220,7 @@ class Escalonator{
             */
             if(RunningProcess == undefined && WaitingProcess.length == 0){
                 ProcessesByTime.push("N")
+                console.log("N")
                 Time++;
                 continue;
             }
@@ -222,7 +238,10 @@ class Escalonator{
                     }
                 }
                 RunningProcess = WaitingProcess[NextProcess];
-                WaitingProcess.slice(NextProcess,1);
+                console.log("hey:\n")
+                console.log(WaitingProcess)
+                WaitingProcess.splice(NextProcess,1);
+                console.log(WaitingProcess)
             }
 
             /* 
@@ -231,12 +250,14 @@ class Escalonator{
             processo daqueles que estão aguardando.
             */
             if(RunningProcess.ExecutionTime == RunningProcess.RunningTime){
-                //console.log(`Processo ${RunningProcess.Key} acabou\n`)
+                console.log(`Processo ${RunningProcess.Key} acabou em ${Time-1}\n`)
+                
                 RunningProcess.Finish = Time;
                 RunningProcess.Executed = true;
                 NumberOfExecutedProcess++;
                 if(WaitingProcess.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -250,21 +271,26 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
+            console.log(`Processo ${RunningProcess.Key} executando\n`)
             ProcessesByTime.push(RunningProcess.Key)
             RunningProcess.RunningTime++;
             Time++;
+
+            controle++
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
+        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -320,9 +346,16 @@ class Escalonator{
             foram exectuados, checamos o .Executed também
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
-                    Queue.push(this.ProcessArray[i]);
-                    this.ProcessArray[i].Executed = true;
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Executed == false){
+                        Queue.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        Queue.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
                 }
             }   
             /* 
@@ -353,6 +386,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(Queue.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -387,6 +421,8 @@ class Escalonator{
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        console.log(ProcessesByTime)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -448,9 +484,16 @@ class Escalonator{
             foram exectuados, checamos o .Executed também
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
-                    WaitingProcess.push(this.ProcessArray[i]);
-                    this.ProcessArray[i].Executed = true;
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
                 }
             }
             /* 
@@ -490,6 +533,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(WaitingProcess.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -539,12 +583,13 @@ class Escalonator{
             Time++;
         }
         var ART = 0
-
+        console.log(ProcessesByTime)
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 

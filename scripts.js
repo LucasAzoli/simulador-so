@@ -79,8 +79,13 @@ class Escalonator{
             checando se algum processo entrou na Queue, ou seja, se há algum processo com .Arrival ==  Time.
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
-                    Queue.push(this.ProcessArray[i]);
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival == Time){
+                        Queue.push(this.ProcessArray[i]);
+                    }
+                }else{                
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
+                    Queue.push(this.ProcessArray[i]);}
                 }
             }
             /* 
@@ -114,6 +119,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(Queue.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -129,12 +135,14 @@ class Escalonator{
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
+        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -187,15 +195,22 @@ class Escalonator{
         em execução, "Time" o tempo corrido, com o loop sendo executado até o número
         de processos executados ser igual ao número de processos originais.
         */
-        while(NumberOfExecutedProcess < NumberOfProcess){
+       var controle = 0
+        while(NumberOfExecutedProcess < NumberOfProcess && controle < 100){
             /* 
             Ao início de cada LOOP, ou seja, quando o "Time" é incrementado, verificamos
             se algum processo entrou na LISTA DE PROCESSOS ESPERANDO, para isso, basta
             verificar se há algum processo com .Arrival
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key){
-                    WaitingProcess.push(this.ProcessArray[i]);
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival == Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                    }
                 }
             }
 
@@ -205,6 +220,7 @@ class Escalonator{
             */
             if(RunningProcess == undefined && WaitingProcess.length == 0){
                 ProcessesByTime.push("N")
+                console.log("N")
                 Time++;
                 continue;
             }
@@ -222,7 +238,10 @@ class Escalonator{
                     }
                 }
                 RunningProcess = WaitingProcess[NextProcess];
-                WaitingProcess.slice(NextProcess,1);
+                console.log("hey:\n")
+                console.log(WaitingProcess)
+                WaitingProcess.splice(NextProcess,1);
+                console.log(WaitingProcess)
             }
 
             /* 
@@ -231,12 +250,14 @@ class Escalonator{
             processo daqueles que estão aguardando.
             */
             if(RunningProcess.ExecutionTime == RunningProcess.RunningTime){
-                //console.log(`Processo ${RunningProcess.Key} acabou\n`)
+                console.log(`Processo ${RunningProcess.Key} acabou em ${Time-1}\n`)
+                
                 RunningProcess.Finish = Time;
                 RunningProcess.Executed = true;
                 NumberOfExecutedProcess++;
                 if(WaitingProcess.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -250,21 +271,26 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
+            console.log(`Processo ${RunningProcess.Key} executando\n`)
             ProcessesByTime.push(RunningProcess.Key)
             RunningProcess.RunningTime++;
             Time++;
+
+            controle++
         }
         /* 
         Percorremos a lista de processos, calculando o tempo que ele ficou "rodando" (ou seja,
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
+        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -320,9 +346,16 @@ class Escalonator{
             foram exectuados, checamos o .Executed também
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
-                    Queue.push(this.ProcessArray[i]);
-                    this.ProcessArray[i].Executed = true;
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Executed == false){
+                        Queue.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        Queue.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
                 }
             }   
             /* 
@@ -353,6 +386,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(Queue.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -387,6 +421,8 @@ class Escalonator{
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        console.log(ProcessesByTime)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -448,9 +484,16 @@ class Escalonator{
             foram exectuados, checamos o .Executed também
             */
             for(let i = 0; i < this.ProcessArray.length; i++){
-                if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
-                    WaitingProcess.push(this.ProcessArray[i]);
-                    this.ProcessArray[i].Executed = true;
+                if(RunningProcess == undefined){
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
+                }else{
+                    if(this.ProcessArray[i].Arrival <= Time && this.ProcessArray[i].Key != RunningProcess.Key && this.ProcessArray[i].Executed == false){
+                        WaitingProcess.push(this.ProcessArray[i]);
+                        this.ProcessArray[i].Executed = true;
+                    }
                 }
             }
             /* 
@@ -490,6 +533,7 @@ class Escalonator{
                 NumberOfExecutedProcess++;
                 if(WaitingProcess.length == 0){
                     RunningProcess = undefined;
+                    ProcessesByTime.push("N")
                     Time++;
                     continue;
                 }
@@ -539,12 +583,13 @@ class Escalonator{
             Time++;
         }
         var ART = 0
-
+        console.log(ProcessesByTime)
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
+        ProcessesByTime.pop()
         return ProcessesByTime
     }
 
@@ -694,6 +739,29 @@ class Memory {
 
 }
 
+let coresHexadecimais = [
+    "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF",
+    "#B8860B", "#FF4500", "#00FF7F", "#808000", "#800080", "#008080",
+    "#C0C0C0", "#808080", "#FFA500", "#A52A2A", "#800000", "#008000",
+    "#000080", "#ADD8E6", "#FF69B4", "#DAA520", "#008080", "#800080",
+    "#DC143C", "#00FFFF", "#00008B", "#B8860B", "#A9A9A9", "#006400",
+    "#BDB76B", "#8B008B", "#556B2F", "#FF8C00", "#9932CC", "#8B0000",
+    "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F", "#00CED1", "#9400D3",
+    "#FF4500", "#DA70D6", "#8A2BE2", "#000080", "#D2691E", "#5F9EA0",
+    "#FFD700", "#FF6347", "#4B0082", "#7FFF00", "#6495ED", "#FFF8DC",
+    "#DCDCDC", "#FFD700", "#00008B", "#008B8B", "#B8860B", "#A9A9A9",
+    "#006400", "#BDB76B", "#8B008B", "#556B2F", "#FF8C00", "#9932CC",
+    "#8B0000", "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F", "#00CED1",
+    "#9400D3", "#FF4500", "#DA70D6", "#8A2BE2", "#00FF7F", "#D2691E",
+    "#5F9EA0", "#FFD700", "#FF6347", "#4B0082", "#7FFF00", "#6495ED",
+    "#FFF8DC", "#DCDCDC", "#FFD700", "#00008B", "#008B8B", "#B8860B",
+    "#A9A9A9", "#006400", "#BDB76B", "#8B008B", "#556B2F", "#FF8C00",
+    "#9932CC", "#8B0000", "#E9967A", "#8FBC8F", "#483D8B", "#2F4F4F",
+    "#00CED1", "#9400D3", "#008000", "#DA70D6", "#8A2BE2", "#00FF7F",
+    "#D2691E", "#5F9EA0", "#FFD700", "#FF6347", "#4B0082", "#7FFF00",
+    "#6495ED", "#FFF8DC", "#DCDCDC", "#FFD700", "#00008B", "#008B8B",
+    "#800000", "#A9A9A9", "#006400", "#BDB76B", "#8B008B", "#556B2F"];
+
 let processos = [];
 
 let memory;
@@ -838,14 +906,14 @@ function criarDiagrama(RunningProcessHistory, process, turnAroundValue) {
     let tempo = document.getElementById("tempo-tabela");
     tempo.appendChild(diagramHeader);
 
-    for (let i=1; i<RunningProcessHistory.length +1; i++) {
+    for (let i=0; i<RunningProcessHistory.length; i++) {
         let diagramHeaderTime = document.createElement('th');
         let text = document.createTextNode((i).toString().padStart(3, '0'));
 
         diagramHeaderTime.appendChild(text);
         setTimeout(() => {
             tempo.appendChild(diagramHeaderTime);
-        }, delay*i)
+        }, delay*(i+1))
     }
 
     process.forEach((obj) => {
@@ -949,7 +1017,7 @@ function updateMemory() {
         }
 
         if (obj != "-") {
-            ramHTML += `<td><p>${id}</p>${obj.slice(0,3) + `<br>` + obj.slice(4, obj.length)}</td>`;
+            ramHTML += `<td style="color: ${coresHexadecimais[parseInt(obj.slice(4, obj.length)) - 1]};"><p style="color: #DEF1F9;">${id}</p>${obj.slice(0,3) + `<br>` + obj.slice(4, obj.length)}</td>`;
         } else {
             ramHTML += `<td><p>${id}</p>${obj}</td>`;
         }
@@ -966,8 +1034,14 @@ function updateMemory() {
         if (id%10 == 0) {
             discoHTML += `<tr>`;
         }
-    
-        discoHTML += `<td>${obj}</td>`;
+
+        if (obj != "-") {
+            discoHTML += `<td style="color: ${coresHexadecimais[id]};">${obj}</td>`;
+        } else {
+            discoHTML += `<td>${obj}</td>`;
+        }
+        
+        
     
         if (id%10 == 9) {
             discoHTML += `</tr>`;

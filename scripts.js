@@ -135,7 +135,6 @@ class Escalonator{
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
-        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
@@ -220,7 +219,6 @@ class Escalonator{
             */
             if(RunningProcess == undefined && WaitingProcess.length == 0){
                 ProcessesByTime.push("N")
-                console.log("N")
                 Time++;
                 continue;
             }
@@ -238,10 +236,7 @@ class Escalonator{
                     }
                 }
                 RunningProcess = WaitingProcess[NextProcess];
-                console.log("hey:\n")
-                console.log(WaitingProcess)
                 WaitingProcess.splice(NextProcess,1);
-                console.log(WaitingProcess)
             }
 
             /* 
@@ -250,7 +245,6 @@ class Escalonator{
             processo daqueles que estão aguardando.
             */
             if(RunningProcess.ExecutionTime == RunningProcess.RunningTime){
-                console.log(`Processo ${RunningProcess.Key} acabou em ${Time-1}\n`)
                 
                 RunningProcess.Finish = Time;
                 RunningProcess.Executed = true;
@@ -271,7 +265,6 @@ class Escalonator{
                 RunningProcess = WaitingProcess[NextProcess];
                 WaitingProcess.splice(NextProcess,1);
             }
-            console.log(`Processo ${RunningProcess.Key} executando\n`)
             ProcessesByTime.push(RunningProcess.Key)
             RunningProcess.RunningTime++;
             Time++;
@@ -283,7 +276,6 @@ class Escalonator{
         o tempo executando + o tempo em espera), somamos na variável AverageResponseTime e 
         depois dividimos pelo número de processos, para calcular o tempo médio de execução.
         */
-        console.log(ProcessesByTime)
         var ART = 0
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
@@ -421,7 +413,6 @@ class Escalonator{
         }
         ART = ART / NumberOfProcess
         this.AverageResponseTime = ART.toFixed(2)
-        console.log(ProcessesByTime)
         ProcessesByTime.pop()
         return ProcessesByTime
     }
@@ -583,7 +574,6 @@ class Escalonator{
             Time++;
         }
         var ART = 0
-        console.log(ProcessesByTime)
         for(let i = 0; i < this.ProcessArray.length; i++){
             ART += this.ProcessArray[i].Finish - this.ProcessArray[i].Arrival
         }
@@ -649,7 +639,7 @@ class Memory {
         this.memsize = 50;
         this.memory = new Array(50).fill("-");
         this.algorithm = algorithm; // consider this to be a string ("FIFO" or "LRU")
-        this.free = this.memsize; // free space in memory
+        this.free = 50; // free space in memory
         this.active = new Queue(); // active processes in memory
         this.LRU = new Queue(); // least recently used processes in memory
         this.virtual = new Array(100).fill("-"); // virtual memory
@@ -710,7 +700,6 @@ class Memory {
 
         for(let i = 0; i < this.memsize; i++) {
             if(process.size() == aux){
-                this.free -= process.size();
                 break;
             }
             if(this.memory[i] == "-") {
@@ -718,6 +707,7 @@ class Memory {
                 aux++;
             }
         }
+        this.free -= process.size();
 
         // update the virtual memory with the first occurence of the allocated process
 
@@ -1008,7 +998,6 @@ function updateMemory() {
 
     let disco = document.getElementById("disco");
     let discoArray = memory.virtual;
-    console.log(discoArray)
     let discoHTML = '';
 
     ramArray.forEach((obj, id) => {

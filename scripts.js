@@ -195,7 +195,7 @@ class Escalonator{
         de processos executados ser igual ao número de processos originais.
         */
        var controle = 0
-        while(NumberOfExecutedProcess < NumberOfProcess && controle < 100){
+        while(NumberOfExecutedProcess < NumberOfProcess){
             /* 
             Ao início de cada LOOP, ou seja, quando o "Time" é incrementado, verificamos
             se algum processo entrou na LISTA DE PROCESSOS ESPERANDO, para isso, basta

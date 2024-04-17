@@ -752,9 +752,16 @@ let coresHexadecimais = [
     "#6495ED", "#FFF8DC", "#DCDCDC", "#FFD700", "#00008B", "#008B8B",
     "#800000", "#A9A9A9", "#006400", "#BDB76B", "#8B008B", "#556B2F"];
 
-let processos = [];
+let processos = [
+    {time: 5, pages: 4, dead: 10, start: 0},
+    {time: 3, pages: 2, dead: 8, start: 2},
+    {time: 9, pages: 6, dead: 13, start: 0},
+    {time: 11, pages: 3, dead: 26, start: 5}
+];
 
 let memory;
+
+realoadProcessos();
 
 let buttonProcesso = document.getElementById("btn-adc-processo");
 

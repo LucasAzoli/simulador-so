@@ -365,11 +365,11 @@ div.diagrama {
     background-color: rgba(140, 143, 148, .3);
     border-radius: 2px;
     padding: 11px;
-    width: 50px;
+    min-width: 50px;
 }
 
 .diagrama table .processo-tempo {
-    width: 80px;
+    min-width: 80px;
 }
 
 #tempo-tabela td {
